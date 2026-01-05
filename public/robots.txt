@@ -1,2 +1,9 @@
 User-agent: *
-Disallow:
+Allow: /
+
+# Disallow admin area
+Disallow: /admin/
+Disallow: /admin
+
+# Sitemaps
+Sitemap: {{ url('/sitemap.xml') }}

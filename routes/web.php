@@ -37,6 +37,13 @@ Route::post('/contact', [ContactController::class, 'store'])->name('contact.stor
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 Route::get('/newsletter/unsubscribe/{token}', [NewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
 
+// Search
+Route::get('/search', [App\Http\Controllers\Public\SearchController::class, 'index'])->name('search');
+
+// SEO
+Route::get('/sitemap.xml', [App\Http\Controllers\Public\SitemapController::class, 'index'])->name('sitemap');
+Route::get('/feed', [App\Http\Controllers\Public\FeedController::class, 'index'])->name('feed');
+
 // Admin Authentication Routes
 Route::prefix('admin')->name('admin.')->group(function () {
     // Login routes (guest only)
