@@ -13,6 +13,17 @@ return new class extends Migration
     {
         Schema::create('services', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('service_category_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('name');
+            $table->string('slug')->unique();
+            $table->string('short_description')->nullable();
+            $table->text('description')->nullable();
+            $table->string('icon')->nullable();
+            $table->string('image')->nullable();
+            $table->json('features')->nullable();
+            $table->decimal('price_starting_from', 10, 2)->nullable();
+            $table->boolean('is_featured')->default(false);
+            $table->integer('order')->default(0);
             $table->timestamps();
         });
     }

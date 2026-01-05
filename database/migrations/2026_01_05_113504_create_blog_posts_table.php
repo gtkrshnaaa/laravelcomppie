@@ -27,7 +27,7 @@ return new class extends Migration
             $table->text('meta_keywords')->nullable();
             
             // Publishing
-            $table->enum('status', ['draft', 'published'])->default('draft');
+            $table->boolean('is_published')->default(false);
             $table->timestamp('published_at')->nullable();
             $table->integer('views_count')->default(0);
             
