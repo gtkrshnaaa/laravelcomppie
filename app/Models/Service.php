@@ -12,16 +12,20 @@ class Service extends Model
         'service_category_id',
         'name',
         'slug',
+        'short_description',
         'description',
-        'content',
-        'image',
         'icon',
+        'image',
+        'features',
+        'price_starting_from',
         'is_featured',
         'order',
     ];
 
     protected $casts = [
+        'features' => 'array',
         'is_featured' => 'boolean',
+        'price_starting_from' => 'decimal:2',
     ];
 
     protected static function boot()

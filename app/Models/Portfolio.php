@@ -9,13 +9,24 @@ use Illuminate\Support\Str;
 class Portfolio extends Model
 {
     protected $fillable = [
-        'portfolio_category_id', 'title', 'slug', 'client_name', 'client_company',
-        'description', 'content', 'featured_image', 'gallery_images', 'project_date',
-        'project_url', 'is_featured', 'order',
+        'portfolio_category_id',
+        'title',
+        'slug',
+        'client_name',
+        'client_company',
+        'description',
+        'image',
+        'gallery_images',
+        'technologies',
+        'project_date',
+        'project_url',
+        'is_featured',
+        'order',
     ];
 
     protected $casts = [
         'gallery_images' => 'array',
+        'technologies' => 'array',
         'is_featured' => 'boolean',
         'project_date' => 'date',
     ];
