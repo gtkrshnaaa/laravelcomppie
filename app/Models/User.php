@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -44,5 +45,53 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Scope to get super admins
+     */
+    public function scopeSuperAdmin($query)
+    {
+        return $query->where('role', 'super_admin');
+    }
+
+    /**
+     * Scope to get content managers
+     */
+    public function scopeContentManager($query)
+    {
+        return $query->where('role', 'content_manager');
+    }
+
+    /**
+     * Scope to get HR managers
+     */
+    public function scopeHrManager($query)
+    {
+        return $query->where('role', 'hr_manager');
+    }
+
+    /**
+     * Check if user is super admin
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'super_admin';
+    }
+
+    /**
+     * Check if user is content manager
+     */
+    public function isContentManager(): bool
+    {
+        return $this->role === 'content_manager';
+    }
+
+    /**
+     * Check if user is HR manager
+     */
+    public function isHrManager(): bool
+    {
+        return $this->role === 'hr_manager';
     }
 }
