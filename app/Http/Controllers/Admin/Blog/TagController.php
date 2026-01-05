@@ -3,63 +3,61 @@
 namespace App\Http\Controllers\Admin\Blog;
 
 use App\Http\Controllers\Controller;
+use App\Models\BlogTag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class TagController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $tags = BlogTag::withCount('posts')->orderBy('name')->paginate(20);
+        return view('admin.blog.tags.index', compact('tags'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('admin.blog.tags.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:blog_tags',
+        ]);
+
+        $validated['slug'] = Str::slug($validated['name']);
+
+        BlogTag::create($validated);
+
+        return redirect()->route('admin.blog.tags.index')
+            ->with('success', 'Blog tag created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(BlogTag $tag)
     {
-        //
+        return view('admin.blog.tags.edit', compact('tag'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, BlogTag $tag)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:blog_tags,name,' . $tag->id,
+        ]);
+
+        $validated['slug'] = Str::slug($validated['name']);
+
+        $tag->update($validated);
+
+        return redirect()->route('admin.blog.tags.index')
+            ->with('success', 'Blog tag updated successfully.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(BlogTag $tag)
     {
-        //
-    }
+        $tag->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->route('admin.blog.tags.index')
+            ->with('success', 'Blog tag deleted successfully.');
     }
 }
