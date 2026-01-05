@@ -18,5 +18,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
         Route::post('/logout', [AdminLoginController::class, 'logout'])->name('logout');
+        
+        // Settings
+        Route::prefix('settings')->name('settings.')->group(function () {
+            Route::get('/company', [\App\Http\Controllers\Admin\Settings\CompanyController::class, 'index'])->name('company.index');
+            Route::put('/company', [\App\Http\Controllers\Admin\Settings\CompanyController::class, 'update'])->name('company.update');
+        });
     });
 });
