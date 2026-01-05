@@ -10,8 +10,13 @@ Route::get('/', function () {
 
 // Admin Authentication Routes
 Route::prefix('admin')->name('admin.')->group(function () {
-    // Login routes
+    // Login routes (guest only)
     Route::get('/login', [AdminLoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AdminLoginController::class, 'login'])->name('login.post');
-    Route::post('/logout', [AdminLoginController::class, 'logout'])->name('logout');
+    
+    // Protected admin routes
+    Route::middleware(['auth', 'admin'])->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+        Route::post('/logout', [AdminLoginController::class, 'logout'])->name('logout');
+    });
 });
