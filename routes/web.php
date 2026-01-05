@@ -3,10 +3,35 @@
 use App\Http\Controllers\Auth\AdminLoginController;
 use Illuminate\Support\Facades\Route;
 
-// Public Homepage
+// Public Routes
 Route::get('/', function () {
     return view('welcome');
+})->name('home');
+
+// Blog
+Route::prefix('blog')->name('blog.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Public\BlogController::class, 'index'])->name('index');
+    Route::get('/{slug}', [\App\Http\Controllers\Public\BlogController::class, 'show'])->name('show');
 });
+
+// Portfolio
+Route::prefix('portfolio')->name('portfolio.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Public\PortfolioController::class, 'index'])->name('index');
+    Route::get('/{slug}', [\App\Http\Controllers\Public\PortfolioController::class, 'show'])->name('show');
+});
+
+// Services
+Route::prefix('services')->name('services.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Public\ServiceController::class, 'index'])->name('index');
+    Route::get('/{slug}', [\App\Http\Controllers\Public\ServiceController::class, 'show'])->name('show');
+});
+
+// About
+Route::get('/about', [\App\Http\Controllers\Public\AboutController::class, 'index'])->name('about');
+
+// Contact
+Route::get('/contact', [\App\Http\Controllers\Public\ContactController::class, 'index'])->name('contact');
+Route::post('/contact', [\App\Http\Controllers\Public\ContactController::class, 'store'])->name('contact.store');
 
 // Admin Authentication Routes
 Route::prefix('admin')->name('admin.')->group(function () {
