@@ -30,8 +30,12 @@ Route::prefix('services')->name('services.')->group(function () {
 Route::get('/about', [\App\Http\Controllers\Public\AboutController::class, 'index'])->name('about');
 
 // Contact
-Route::get('/contact', [\App\Http\Controllers\Public\ContactController::class, 'index'])->name('contact');
-Route::post('/contact', [\App\Http\Controllers\Public\ContactController::class, 'store'])->name('contact.store');
+Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+
+// Newsletter
+Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
+Route::get('/newsletter/unsubscribe/{token}', [NewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
 
 // Admin Authentication Routes
 Route::prefix('admin')->name('admin.')->group(function () {

@@ -207,18 +207,34 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 <div class="md:col-span-2">
                     <h2 class="text-lg font-bold tracking-tighter text-primary mb-4">{{ config('app.name') }}</h2>
-                    <p class="text-sm text-secondary max-w-md">
+                    <p class="text-sm text-secondary max-w-md mb-6">
                         Professional company profile platform built with Laravel. Empowering businesses to showcase their services and portfolios.
                     </p>
+                    
+                    <!-- Newsletter Form -->
+                    <div class="max-w-md">
+                        <h3 class="text-sm font-bold text-primary mb-3">Subscribe to our Newsletter</h3>
+                        <form action="{{ route('newsletter.subscribe') }}" method="POST" class="flex gap-2">
+                            @csrf
+                            <input type="email" name="email" placeholder="Enter your email" required class="flex-1 px-4 py-2 rounded-lg border border-border bg-background text-primary text-sm focus:outline-none focus:ring-2 focus:ring-primary/20">
+                            <button type="submit" class="px-4 py-2 bg-primary text-background rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">
+                                Subscribe
+                            </button>
+                        </form>
+                        @if(session('success'))
+                            <p class="mt-2 text-xs text-green-500">{{ session('success') }}</p>
+                        @endif
+                    </div>
                 </div>
                 
                 <div>
                     <h3 class="text-sm font-bold text-primary mb-4">Quick Links</h3>
                     <div class="flex flex-col gap-2 text-sm text-secondary">
-                        <a href="#about" class="hover:text-primary transition-colors">About Us</a>
-                        <a href="#services" class="hover:text-primary transition-colors">Services</a>
-                        <a href="#portfolio" class="hover:text-primary transition-colors">Portfolio</a>
-                        <a href="#contact" class="hover:text-primary transition-colors">Contact</a>
+                        <a href="{{ route('about') }}" class="hover:text-primary transition-colors">About Us</a>
+                        <a href="{{ route('services.index') }}" class="hover:text-primary transition-colors">Services</a>
+                        <a href="{{ route('portfolio.index') }}" class="hover:text-primary transition-colors">Portfolio</a>
+                        <a href="{{ route('blog.index') }}" class="hover:text-primary transition-colors">Blog</a>
+                        <a href="{{ route('contact') }}" class="hover:text-primary transition-colors">Contact</a>
                     </div>
                 </div>
                 
