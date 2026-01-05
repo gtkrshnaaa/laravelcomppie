@@ -3,63 +3,130 @@
 namespace App\Http\Controllers\Admin\Portfolio;
 
 use App\Http\Controllers\Controller;
+use App\Models\Portfolio;
+use App\Models\PortfolioCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PortfolioController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $portfolios = Portfolio::with('category')->latest()->paginate(20);
+        return view('admin.portfolio.portfolios.index', compact('portfolios'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $categories = PortfolioCategory::orderBy('name')->get();
+        return view('admin.portfolio.portfolios.create', compact('categories'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'portfolio_category_id' => 'required|exists:portfolio_categories,id',
+            'title' => 'required|string|max:255',
+            'client_name' => 'nullable|string|max:255',
+            'client_company' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gallery_images' => 'nullable|array',
+            'gallery_images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
+            'project_date' => 'nullable|date',
+            'project_url' => 'nullable|url',
+            'technologies' => 'nullable|array',
+            'is_featured' => 'boolean',
+            'order' => 'nullable|integer|min:0',
+        ]);
+
+        $validated['slug'] = Str::slug($validated['title']);
+        $validated['is_featured'] = $request->has('is_featured');
+
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('portfolios', 'public');
+        }
+
+        if ($request->hasFile('gallery_images')) {
+            $galleryPaths = [];
+            foreach ($request->file('gallery_images') as $image) {
+                $galleryPaths[] = $image->store('portfolios/gallery', 'public');
+            }
+            $validated['gallery_images'] = $galleryPaths;
+        }
+
+        Portfolio::create($validated);
+
+        return redirect()->route('admin.portfolio.portfolios.index')
+            ->with('success', 'Portfolio created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(Portfolio $portfolio)
     {
-        //
+        $categories = PortfolioCategory::orderBy('name')->get();
+        return view('admin.portfolio.portfolios.edit', compact('portfolio', 'categories'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, Portfolio $portfolio)
     {
-        //
+        $validated = $request->validate([
+            'portfolio_category_id' => 'required|exists:portfolio_categories,id',
+            'title' => 'required|string|max:255',
+            'client_name' => 'nullable|string|max:255',
+            'client_company' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gallery_images' => 'nullable|array',
+            'gallery_images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
+            'project_date' => 'nullable|date',
+            'project_url' => 'nullable|url',
+            'technologies' => 'nullable|array',
+            'is_featured' => 'boolean',
+            'order' => 'nullable|integer|min:0',
+        ]);
+
+        $validated['slug'] = Str::slug($validated['title']);
+        $validated['is_featured'] = $request->has('is_featured');
+
+        if ($request->hasFile('image')) {
+            if ($portfolio->image && Storage::disk('public')->exists($portfolio->image)) {
+                Storage::disk('public')->delete($portfolio->image);
+            }
+            $validated['image'] = $request->file('image')->store('portfolios', 'public');
+        }
+
+        if ($request->hasFile('gallery_images')) {
+            $galleryPaths = $portfolio->gallery_images ?? [];
+            foreach ($request->file('gallery_images') as $image) {
+                $galleryPaths[] = $image->store('portfolios/gallery', 'public');
+            }
+            $validated['gallery_images'] = $galleryPaths;
+        }
+
+        $portfolio->update($validated);
+
+        return redirect()->route('admin.portfolio.portfolios.index')
+            ->with('success', 'Portfolio updated successfully.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(Portfolio $portfolio)
     {
-        //
-    }
+        if ($portfolio->image && Storage::disk('public')->exists($portfolio->image)) {
+            Storage::disk('public')->delete($portfolio->image);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        if ($portfolio->gallery_images) {
+            foreach ($portfolio->gallery_images as $image) {
+                if (Storage::disk('public')->exists($image)) {
+                    Storage::disk('public')->delete($image);
+                }
+            }
+        }
+
+        $portfolio->delete();
+
+        return redirect()->route('admin.portfolio.portfolios.index')
+            ->with('success', 'Portfolio deleted successfully.');
     }
 }
