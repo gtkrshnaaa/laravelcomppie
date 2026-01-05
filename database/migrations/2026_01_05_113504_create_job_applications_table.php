@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('email');
             $table->string('phone');
             $table->text('cover_letter')->nullable();
-            $table->string('resume_path');
+            $table->string('resume_path')->nullable();
             $table->string('tracking_code')->unique();
             $table->enum('status', ['pending', 'reviewing', 'interviewed', 'accepted', 'rejected'])->default('pending');
             $table->text('notes')->nullable();
