@@ -2,9 +2,30 @@
 
 @section('title', $post->meta_title ?? $post->title)
 
+@push('head')
+    <x-meta-tags 
+        :title="$post->meta_title ?? $post->title"
+        :description="$post->meta_description ?? ($post->excerpt ?? strip_tags(substr($post->content, 0, 155)))"
+        :image="$post->featured_image ? Storage::url($post->featured_image) : ''"
+        :url="route('blog.show', $post->slug)"
+        type="article"
+    />
+@endpush
+
 @section('content')
+    <!-- Breadcrumbs -->
+    <div class="pt-24 pb-4">
+        <div class="container mx-auto px-4 max-w-4xl">
+            <x-breadcrumbs :items="[
+                ['label' => 'Blog', 'url' => route('blog.index')],
+                ['label' => $post->category->name, 'url' => route('blog.index', ['category' => $post->category->slug])],
+                ['label' => $post->title, 'url' => '']
+            ]" />
+        </div>
+    </div>
+
     <!-- Article Header -->
-    <article class="pt-24 pb-12">
+    <article class="pb-12">
         <div class="container mx-auto px-4 max-w-4xl">
             <!-- Category & Date -->
             <div class="flex items-center gap-3 mb-6">
