@@ -100,28 +100,51 @@
                 </a>
                 
                 <div class="pt-4 pb-2">
-                    <p class="px-4 text-xs font-bold text-secondary uppercase tracking-wider">Settings</p>
-                </div>
-                
-                <a href="{{ route('admin.settings.company.index') }}" class="block px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.settings.*') ? 'bg-primary text-background' : 'text-secondary hover:text-primary hover:bg-secondary/10' }} transition-colors">
-                    Company Settings
-                </a>
-                
-                <div class="pt-4 pb-2">
                     <p class="px-4 text-xs font-bold text-secondary uppercase tracking-wider">Content</p>
                 </div>
                 
-                <a href="#" class="block px-4 py-2 rounded-lg text-sm font-medium text-secondary hover:text-primary hover:bg-secondary/10 transition-colors">
+                <a href="{{ route('admin.service.services.index') }}" class="block px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.service.*') ? 'bg-primary text-background' : 'text-secondary hover:text-primary hover:bg-secondary/10' }} transition-colors">
                     Services
                 </a>
-                <a href="#" class="block px-4 py-2 rounded-lg text-sm font-medium text-secondary hover:text-primary hover:bg-secondary/10 transition-colors">
+                <a href="{{ route('admin.portfolio.portfolios.index') }}" class="block px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.portfolio.*') ? 'bg-primary text-background' : 'text-secondary hover:text-primary hover:bg-secondary/10' }} transition-colors">
                     Portfolio
                 </a>
-                <a href="#" class="block px-4 py-2 rounded-lg text-sm font-medium text-secondary hover:text-primary hover:bg-secondary/10 transition-colors">
+                <a href="{{ route('admin.blog.posts.index') }}" class="block px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.blog.*') ? 'bg-primary text-background' : 'text-secondary hover:text-primary hover:bg-secondary/10' }} transition-colors">
                     Blog
                 </a>
-                <a href="#" class="block px-4 py-2 rounded-lg text-sm font-medium text-secondary hover:text-primary hover:bg-secondary/10 transition-colors">
+                <a href="{{ route('admin.team.members.index') }}" class="block px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.team.*') ? 'bg-primary text-background' : 'text-secondary hover:text-primary hover:bg-secondary/10' }} transition-colors">
                     Team
+                </a>
+                <a href="{{ route('admin.testimonial.testimonials.index') }}" class="block px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.testimonial.*') ? 'bg-primary text-background' : 'text-secondary hover:text-primary hover:bg-secondary/10' }} transition-colors">
+                    Testimonials
+                </a>
+                <a href="{{ route('admin.slider.sliders.index') }}" class="block px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.slider.*') ? 'bg-primary text-background' : 'text-secondary hover:text-primary hover:bg-secondary/10' }} transition-colors">
+                    Sliders
+                </a>
+                
+                <div class="pt-4 pb-2">
+                    <p class="px-4 text-xs font-bold text-secondary uppercase tracking-wider">Engagement</p>
+                </div>
+                
+                <a href="{{ route('admin.career.jobs.index') }}" class="block px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.career.*') ? 'bg-primary text-background' : 'text-secondary hover:text-primary hover:bg-secondary/10' }} transition-colors">
+                    Jobs & Applications
+                </a>
+                <a href="{{ route('admin.contact.submissions.index') }}" class="block px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.contact.*') ? 'bg-primary text-background' : 'text-secondary hover:text-primary hover:bg-secondary/10' }} transition-colors">
+                    Contact Submissions
+                </a>
+                <a href="{{ route('admin.faq.faqs.index') }}" class="block px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.faq.*') ? 'bg-primary text-background' : 'text-secondary hover:text-primary hover:bg-secondary/10' }} transition-colors">
+                    FAQ
+                </a>
+                
+                <div class="pt-4 pb-2">
+                    <p class="px-4 text-xs font-bold text-secondary uppercase tracking-wider">Settings</p>
+                </div>
+                
+                <a href="{{ route('admin.user.users.index') }}" class="block px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.user.*') ? 'bg-primary text-background' : 'text-secondary hover:text-primary hover:bg-secondary/10' }} transition-colors">
+                    Users
+                </a>
+                <a href="{{ route('admin.settings.company.index') }}" class="block px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.settings.*') ? 'bg-primary text-background' : 'text-secondary hover:text-primary hover:bg-secondary/10' }} transition-colors">
+                    Company Settings
                 </a>
             </nav>
         </div>
