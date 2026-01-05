@@ -52,6 +52,9 @@ class BlogController extends Controller
             ->where('is_published', true)
             ->firstOrFail();
 
+        // Increment view count
+        $post->increment('views_count');
+
         // Get related posts
         $relatedPosts = BlogPost::where('blog_category_id', $post->blog_category_id)
             ->where('id', '!=', $post->id)

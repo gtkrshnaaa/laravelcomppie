@@ -72,6 +72,16 @@
         </section>
     @endif
 
+<!-- Share Buttons -->
+<section class="pb-12 border-b border-border">
+    <div class="container mx-auto px-4 max-w-4xl">
+        <x-share-buttons 
+            :url="route('blog.show', $post->slug)" 
+            :title="$post->title" 
+        />
+    </div>
+</section>
+
     <!-- Related Posts -->
     @if($relatedPosts->count() > 0)
         <section class="py-20 bg-surface">
