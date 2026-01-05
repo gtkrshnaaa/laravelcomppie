@@ -1,142 +1,178 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" x-data="{
+    theme: localStorage.getItem('theme') || 'dark',
+    toggleTheme() {
+        this.theme = this.theme === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('theme', this.theme);
+        if (this.theme === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+       }
+    },
+    init() {
+        if (this.theme === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    }
+}" x-init="init()" :class="theme">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Dashboard') - Admin Panel</title>
-    
+    <title>@yield('title', 'Admin Panel') - {{ config('app.name') }}</title>
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark')
+        } else {
+            document.documentElement.classList.remove('dark')
+        }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        background: 'var(--background)',
+                        surface: 'var(--surface)',
+                        border: 'var(--border)',
+                        primary: 'var(--primary)',
+                        secondary: 'var(--secondary)',
+                        accent: 'var(--accent)',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Light Mode */
+            --background: #ffffff;
+            --surface: #ffffff;
+            --border: #e4e4e7;
+            --primary: #18181b;
+            --secondary: #71717a;
+            --accent: #000000;
+        }
+
+        .dark {
+            /* Dark Mode */
+            --background: #0a0a0a;
+            --surface: #171717;
+            --border: #262626;
+            --primary: #ededed;
+            --secondary: #a1a1aa;
+            --accent: #ffffff;
+        }
+
+        body { font-family: 'Inter', sans-serif; }
+    </style>
 </head>
-<body class="bg-gray-100">
-    <div x-data="{ sidebarOpen: false }" class="flex h-screen overflow-hidden">
-        <!-- Sidebar -->
-        <aside 
-            :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-            class="fixed inset-y-0 left-0 z-50 w-64 bg-gray-900 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0"
-        >
-            <div class="flex flex-col h-full">
-                <!-- Logo -->
-                <div class="flex items-center justify-between h-16 px-6 bg-gray-800">
-                    <h1 class="text-xl font-bold text-white">Admin Panel</h1>
-                    <button @click="sidebarOpen = false" class="lg:hidden text-gray-400 hover:text-white">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                    </button>
+<body class="bg-background text-primary min-h-screen flex">
+    
+    <!-- Sidebar -->
+    <aside class="w-64 bg-background border-r border-border flex-shrink-0 flex flex-col justify-between hidden md:flex sticky top-0 h-screen overflow-y-auto">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-xl font-bold tracking-tighter text-primary">{{ config('app.name') }}</h1>
+                <button @click="toggleTheme()" class="text-secondary hover:text-primary transition-colors">
+                    <svg x-show="theme === 'dark'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                    </svg>
+                    <svg x-show="theme === 'light'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                    </svg>
+                </button>
+            </div>
+            
+            <nav class="space-y-1">
+                <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.dashboard') ? 'bg-primary text-background' : 'text-secondary hover:text-primary hover:bg-secondary/10' }} transition-colors">
+                    Dashboard
+                </a>
+                
+                <div class="pt-4 pb-2">
+                    <p class="px-4 text-xs font-bold text-secondary uppercase tracking-wider">Settings</p>
                 </div>
+                
+                <a href="{{ route('admin.settings.company.index') }}" class="block px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.settings.*') ? 'bg-primary text-background' : 'text-secondary hover:text-primary hover:bg-secondary/10' }} transition-colors">
+                    Company Settings
+                </a>
+                
+                <div class="pt-4 pb-2">
+                    <p class="px-4 text-xs font-bold text-secondary uppercase tracking-wider">Content</p>
+                </div>
+                
+                <a href="#" class="block px-4 py-2 rounded-lg text-sm font-medium text-secondary hover:text-primary hover:bg-secondary/10 transition-colors">
+                    Services
+                </a>
+                <a href="#" class="block px-4 py-2 rounded-lg text-sm font-medium text-secondary hover:text-primary hover:bg-secondary/10 transition-colors">
+                    Portfolio
+                </a>
+                <a href="#" class="block px-4 py-2 rounded-lg text-sm font-medium text-secondary hover:text-primary hover:bg-secondary/10 transition-colors">
+                    Blog
+                </a>
+                <a href="#" class="block px-4 py-2 rounded-lg text-sm font-medium text-secondary hover:text-primary hover:bg-secondary/10 transition-colors">
+                    Team
+                </a>
+            </nav>
+        </div>
 
-                <!-- Navigation -->
-                <nav class="flex-1 px-4 py-6 overflow-y-auto">
-                    <a href="{{ route('admin.dashboard') }}" class="flex items-center px-4 py-3 mb-2 text-gray-300 rounded-lg hover:bg-gray-800 {{ request()->routeIs('admin.dashboard') ? 'bg-gray-800 text-white' : '' }}">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                        </svg>
-                        Dashboard
-                    </a>
-
-                    <!-- Settings -->
-                    <div class="mt-6">
-                        <p class="px-4 text-xs font-semibold text-gray-500 uppercase">Settings</p>
-                        <a href="{{ route('admin.settings.company.index') }}" class="flex items-center px-4 py-3 mt-2 text-gray-300 rounded-lg hover:bg-gray-800 {{ request()->routeIs('admin.settings.company.*') ? 'bg-gray-800 text-white' : '' }}">
-                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                            </svg>
-                            Company Settings
-                        </a>
-                    </div>
-
-                    <!-- Services -->
-                    <div class="mt-4">
-                        <p class="px-4 text-xs font-semibold text-gray-500 uppercase">Content</p>
-                    </div>
-
-                    <!-- Blog -->
-                    <div class="mt-4">
-                        <p class="px-4 text-xs font-semibold text-gray-500 uppercase">Blog</p>
-                    </div>
-
-                    <!-- Team -->
-                    <div class="mt-4">
-                        <p class="px-4 text-xs font-semibold text-gray-500 uppercase">Team & Testimonials</p>
-                    </div>
-
-                    <!-- Other -->
-                    <div class="mt-4">
-                        <p class="px-4 text-xs font-semibold text-gray-500 uppercase">Other</p>
-                    </div>
-                </nav>
-
-                <!-- User Info -->
-                <div class="p-4 bg-gray-800 border-t border-gray-700">
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold">
-                            {{ substr(auth()->user()->name, 0, 1) }}
-                        </div>
-                        <div class="ml-3 flex-1">
-                            <p class="text-sm font-medium text-white">{{ auth()->user()->name }}</p>
-                            <p class="text-xs text-gray-400">{{ ucwords(str_replace('_', ' ', auth()->user()->role)) }}</p>
-                        </div>
-                    </div>
-                    <form method="POST" action="{{ route('admin.logout') }}" class="mt-3">
-                        @csrf
-                        <button type="submit" class="w-full px-4 py-2 text-sm text-left text-gray-300 rounded hover:bg-gray-700">
-                            Logout
-                        </button>
-                    </form>
+        <div class="p-6 border-t border-border">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-8 h-8 rounded-full bg-surface flex items-center justify-center text-xs font-bold border border-border">
+                    {{ substr(auth()->user()->name, 0, 1) }}
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-primary">{{ auth()->user()->name }}</p>
+                    <p class="text-xs text-secondary">{{ ucwords(str_replace('_', ' ', auth()->user()->role)) }}</p>
                 </div>
             </div>
-        </aside>
-
-        <!-- Main Content -->
-        <div class="flex-1 flex flex-col overflow-hidden">
-            <!-- Top Bar -->
-            <header class="bg-white shadow-sm">
-                <div class="flex items-center justify-between h-16 px-6">
-                    <button @click="sidebarOpen = true" class="lg:hidden text-gray-600 hover:text-gray-900">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                        </svg>
-                    </button>
-                    <h2 class="text-xl font-semibold text-gray-800">@yield('page-title', 'Dashboard')</h2>
-                    <div class="text-sm text-gray-600">
-                        {{ now()->format('l, F j, Y') }}
-                    </div>
-                </div>
-            </header>
-
-            <!-- Page Content -->
-            <main class="flex-1 overflow-y-auto p-6">
-                @if (session('success'))
-                    <div class="bg-green-50 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded">
-                        <p>{{ session('success') }}</p>
-                    </div>
-                @endif
-
-                @if (session('error'))
-                    <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
-                        <p>{{ session('error') }}</p>
-                    </div>
-                @endif
-
-                @yield('content')
-            </main>
+            <form method="POST" action="{{ route('admin.logout') }}">
+                @csrf
+                <button type="submit" class="w-full text-left px-0 text-red-500 text-xs hover:text-red-400 transition-colors">
+                    Logout
+                </button>
+            </form>
         </div>
-    </div>
+    </aside>
 
-    <!-- Mobile Sidebar Overlay -->
-    <div 
-        x-show="sidebarOpen" 
-        @click="sidebarOpen = false"
-        x-transition:enter="transition-opacity ease-linear duration-300"
-        x-transition:enter-start="opacity-0"
-        x-transition:enter-end="opacity-100"
-        x-transition:leave="transition-opacity ease-linear duration-300"
-        x-transition:leave-start="opacity-100"
-        x-transition:leave-end="opacity-0"
-        class="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
-        style="display: none;"
-    ></div>
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
+        
+        <!-- Mobile Header -->
+        <header class="md:hidden bg-background border-b border-border p-4 flex items-center justify-between">
+             <h1 class="text-lg font-bold tracking-tighter text-primary">{{ config('app.name') }}</h1>
+             <div class="flex items-center gap-4">
+                <button @click="toggleTheme()" class="text-secondary hover:text-primary transition-colors">
+                    <svg x-show="theme === 'dark'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                    </svg>
+                    <svg x-show="theme === 'light'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                    </svg>
+                </button>
+             </div>
+        </header>
+
+        <div class="flex-1 overflow-auto p-6 md:p-12">
+            @if(session('success'))
+                <div class="mb-6 bg-green-900/30 border border-green-900 text-green-300 px-4 py-3 rounded-lg text-sm" role="alert">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @yield('content')
+        </div>
+    </main>
+
 </body>
 </html>
